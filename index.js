@@ -15,6 +15,9 @@ const getTasksFromLocalStorage = () => {
   const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   return tasks;
 };
+const editTaskInLocalStorage = () => {
+    
+}
 
 const storeTaskInLocalStorage = (task) => {
   const tasks = getTasksFromLocalStorage();
@@ -47,8 +50,8 @@ const getTasks = () => {
     li.textContent = task;
 
     const taskText = document.createElement("span");
-    taskText.className = "delete-item";
-    taskText.innerHTML = '<i class="fa fa-remove"></i>';
+    taskText.className = "delete-item edit-item";
+    taskText.innerHTML = '<i class="fa fa-remove"></i> <i class="fa fa-edit"></i>';
     li.append(taskText);
 
     // Append li to ul
@@ -70,8 +73,9 @@ const addTask = (event) => {
   li.textContent = taskInput.value; // значення яке ввів користувач
 
   const taskText = document.createElement("span");
-  taskText.className = "delete-item";
-  taskText.innerHTML = '<i class="fa fa-remove"></i>';
+  taskText.className = "delete-item edit-item";
+  taskText.innerHTML = '<i class="fa fa-remove"></i> <i class="fa fa-edit"></i>';
+    
   li.append(taskText);
 
   taskList.append(li);
@@ -99,6 +103,24 @@ const removeTask = (event) => {
     }
   }
 };
+const editTask = (event) => {
+    const isEditIcon = event.target.classList.contains("fa-edit");
+    let editLi = event.target.closest("li");
+    console.log(editLi);
+    if (isEditIcon) {
+        const isEdit = prompt("Хочеш щось змінити?", editLi.textContent) 
+        if (isEdit) {
+            console.log(isEdit);
+            editLi.innerHTML = `<li class='collection-item'>${isEdit}
+           <span class='delete-item edit-item'>
+            <i class="fa fa-remove"></i> <i class="fa fa-edit"></i>
+            </span>
+            </li>` 
+            editTaskInLocalStorage(isEdit);
+        }
+    }
+
+}
 
 const clearTasks = () => {
   taskList.innerHTML = "";
@@ -133,6 +155,7 @@ getTasks();
 form.addEventListener("submit", addTask);
 
 taskList.addEventListener("click", removeTask);
+taskList.addEventListener("click", editTask);
 
 clearButton.addEventListener("click", clearTasks);
 
