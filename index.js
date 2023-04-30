@@ -9,32 +9,47 @@ const taskInput = document.querySelector(".task-input");
 const filterInput = document.querySelector(".filter-input");
 const taskList = document.querySelector(".collection");
 const clearButton = document.querySelector(".clear-tasks");
-
+let tasks={};
 // "storage" functions
 const getTasksFromLocalStorage = () => {
   const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   return tasks;
 };
-const editTaskInLocalStorage = () => {
-    
-}
 
 const storeTaskInLocalStorage = (task) => {
   const tasks = getTasksFromLocalStorage();
-  tasks.push(task);
+  tasks.push({
+    id: Date.now(),
+    text: task,
+  });
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 };
 
-const removeTaskFromLocalStorage = (deletedTask) => {
+const removeTaskFromLocalStorage = (id) => {
   const tasks = getTasksFromLocalStorage();
-
+  const deletedIndex = tasks.findIndex((task) => task.id==id);
   // other variant .filter
-  const deletedIndex = tasks.findIndex((task) => task === deletedTask);
+  //const deletedIndex = tasks.findIndex((task) => task === deletedTask);
   tasks.splice(deletedIndex, 1);
+  
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 };
+const editTaskInLocalStorage = (editText, editId) => {
+  const tasks = getTasksFromLocalStorage();
+  const editLS = tasks.forEach((task) => {
+  if (task.id == editId) {
+    task.text = editText;
+  }})
+  console.log(editLS);
+  console.log(editText);
+  console.log(editId);
+  console.log(tasks);
+  //console.log(tasks.text);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+}
+
 
 const clearTasksFromLocalStorage = () => {
   localStorage.removeItem(STORAGE_KEY);
@@ -44,10 +59,11 @@ const clearTasksFromLocalStorage = () => {
 const getTasks = () => {
   const tasks = getTasksFromLocalStorage();
 
-  tasks.forEach((task) => {
+  tasks.forEach((tasks) => {
     const li = document.createElement("li");
     li.className = "collection-item";
-    li.textContent = task;
+    li.textContent = tasks.text;
+    li.setAttribute('id', tasks.id);
 
     const taskText = document.createElement("span");
     taskText.className = "delete-item edit-item";
@@ -97,9 +113,11 @@ const removeTask = (event) => {
       // remove from DOM
       // console.log(event.target.parentElement.parentElement);
       const deletedLi = event.target.closest("li");
+      deletedLi.id;
+      console.log( deletedLi.id);
       deletedLi.remove();
-
-      removeTaskFromLocalStorage(deletedLi.textContent);
+      
+      removeTaskFromLocalStorage(deletedLi.id);
     }
   }
 };
@@ -111,12 +129,13 @@ const editTask = (event) => {
         const isEdit = prompt("Хочеш щось змінити?", editLi.textContent) 
         if (isEdit) {
             console.log(isEdit);
+            console.log(editLi.id);
             editLi.innerHTML = `<li class='collection-item'>${isEdit}
            <span class='delete-item edit-item'>
             <i class="fa fa-remove"></i> <i class="fa fa-edit"></i>
             </span>
             </li>` 
-            editTaskInLocalStorage(isEdit);
+            editTaskInLocalStorage(isEdit, editLi.id);
         }
     }
 
