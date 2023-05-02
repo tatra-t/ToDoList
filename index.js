@@ -36,17 +36,11 @@ const removeTaskFromLocalStorage = (id) => {
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 };
-const editTaskInLocalStorage = (editText, editId) => {
+const editTaskInLocalStorage = (editedText, editId) => {
   const tasks = getTasksFromLocalStorage();
-  const editLS = tasks.forEach((task) => {
-  if (task.id == editId) {
-    task.text = editText;
-  }})
-  console.log(editLS);
-  console.log(editText);
-  console.log(editId);
-  console.log(tasks);
-  //console.log(tasks.text);
+  const editedIndex = tasks.findIndex((task) =>
+  task.id == editId);
+  tasks[editedIndex].text = editedText;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
@@ -130,11 +124,7 @@ const editTask = (event) => {
         if (isEdit) {
             console.log(isEdit);
             console.log(editLi.id);
-            editLi.innerHTML = `<li class='collection-item'>${isEdit}
-           <span class='delete-item edit-item'>
-            <i class="fa fa-remove"></i> <i class="fa fa-edit"></i>
-            </span>
-            </li>` 
+            editLi.textContent = isEdit;
             editTaskInLocalStorage(isEdit, editLi.id);
         }
     }
