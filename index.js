@@ -120,12 +120,12 @@ const editTask = (event) => {
     let editLi = event.target.closest("li");
     console.log(editLi);
     if (isEditIcon) {
-        const editedText = prompt("Хочеш щось змінити?", editLi.textContent) 
-        if (editedText) {
-            console.log(isEdit);
+        const newText = prompt("Хочеш щось змінити?", editLi.textContent) 
+        if (newText) {
+            console.log(newText);
             console.log(editLi.id);
-            editLi.textContent = editedText;
-            editTaskInLocalStorage(editedText, editLi.id);
+            editLi.textContent = newText;
+            editTaskInLocalStorage(newText, editLi.id);
         }
     }
 
